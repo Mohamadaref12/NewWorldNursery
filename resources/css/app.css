@@ -1,0 +1,43 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../views/**/*.blade.php';
+
+@theme {
+    --font-sans: 'Nunito', ui-sans-serif, system-ui, sans-serif;
+    --color-nursery-teal: #2e9e94;
+    --color-nursery-teal-dark: #247a72;
+    --color-nursery-cream: #fdf8f0;
+    --color-nursery-yellow: #f5d76e;
+    --color-nursery-pink: #f8b4c4;
+    --color-nursery-blue: #b8e0f0;
+    --color-nursery-green: #c8e6c9;
+    --color-nursery-navy: #2c3e50;
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+@layer utilities {
+    .highlight-wave {
+        display: inline-block;
+        background: var(--color-nursery-teal);
+        color: white;
+        padding: 0.1em 0.45em;
+        border-radius: 999px 999px 999px 0.85rem / 1.2em 1.2em 0.7em 1.1em;
+        line-height: 1.2;
+    }
+
+    .highlight-brush {
+        background: linear-gradient(transparent 55%, #7ec8c0 55%);
+        padding: 0 0.15em;
+    }
+
+    .cloud-mask {
+        border-radius: 42% 58% 48% 52% / 48% 42% 58% 52%;
+    }
+}
