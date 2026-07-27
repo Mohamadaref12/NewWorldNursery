@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\Support\ImageUrl;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
 /** @mixin \App\Models\SiteSetting */
 class SiteSettingResource extends JsonResource
@@ -26,7 +26,7 @@ class SiteSettingResource extends JsonResource
                 'eyebrow' => $this->hero_eyebrow,
                 'title' => $this->hero_title,
                 'subtitle' => $this->hero_subtitle,
-                'image' => $this->imageUrl($this->hero_image),
+                'image' => ImageUrl::make($this->hero_image),
                 'cta_primary' => $this->hero_cta_primary,
                 'cta_secondary' => $this->hero_cta_secondary,
             ],
@@ -35,7 +35,7 @@ class SiteSettingResource extends JsonResource
                 'title' => $this->about_title,
                 'highlight' => $this->about_highlight,
                 'content' => $this->about_content,
-                'image' => $this->imageUrl($this->about_image),
+                'image' => ImageUrl::make($this->about_image),
                 'cta' => $this->about_cta,
             ],
             'locations' => [
@@ -70,10 +70,5 @@ class SiteSettingResource extends JsonResource
             'footer_about' => $this->footer_about,
             'newsletter_title' => $this->newsletter_title,
         ];
-    }
-
-    private function imageUrl(?string $path): ?string
-    {
-        return $path ? Storage::disk('public')->url($path) : null;
     }
 }

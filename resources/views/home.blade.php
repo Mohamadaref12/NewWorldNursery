@@ -1,7 +1,7 @@
 @php
-    use Illuminate\Support\Facades\Storage;
+    use App\Support\ImageUrl;
 
-    $imageUrl = fn (?string $path) => $path ? Storage::url($path) : null;
+    $imageUrl = fn (?string $path) => ImageUrl::make($path);
 
     $titleWithHighlight = function (?string $title, ?string $highlight): string {
         $title = e($title ?? '');
@@ -110,8 +110,6 @@
                         <div class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center text-2xl overflow-hidden" style="background-color: {{ $feature->icon_color }}">
                             @if ($feature->icon_image)
                                 <img src="{{ $imageUrl($feature->icon_image) }}" alt="" class="w-10 h-10 object-contain">
-                            @else
-                                {{ $feature->icon ?: '⭐' }}
                             @endif
                         </div>
                         <h3 class="font-extrabold text-nursery-navy mb-2">{{ $feature->title }}</h3>

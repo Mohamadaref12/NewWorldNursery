@@ -13,7 +13,7 @@ class GalleryItemForm
     {
         return $schema
             ->components([
-                FileUpload::make('image')->image()->required()->directory('gallery')->disk('public'),
+                FileUpload::make('image')->image()->required()->directory('gallery')->disk('images')->visibility('public'),
                 TextInput::make('alt')->maxLength(255),
                 TextInput::make('sort_order')->numeric()->default(0),
                 Toggle::make('is_active')->default(true),

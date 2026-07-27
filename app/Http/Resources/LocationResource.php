@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\Support\ImageUrl;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
 /** @mixin \App\Models\Location */
 class LocationResource extends JsonResource
@@ -26,7 +26,7 @@ class LocationResource extends JsonResource
             'working_hours' => $this->working_hours,
             'map_url' => $this->map_url,
             'visit_url' => $this->visit_url,
-            'image' => $this->image ? Storage::disk('public')->url($this->image) : null,
+            'image' => ImageUrl::make($this->image),
             'sort_order' => $this->sort_order,
         ];
     }

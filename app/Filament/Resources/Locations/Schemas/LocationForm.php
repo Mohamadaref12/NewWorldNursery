@@ -25,7 +25,7 @@ class LocationForm
                 TextInput::make('working_hours')->maxLength(255)->placeholder('Sun – Thu: 7:00 AM – 6:00 PM'),
                 TextInput::make('map_url')->url()->maxLength(500),
                 TextInput::make('visit_url')->url()->maxLength(500)->label('Plan a Visit URL'),
-                FileUpload::make('image')->image()->directory('locations')->disk('public'),
+                FileUpload::make('image')->image()->directory('locations')->disk('images')->visibility('public'),
                 TextInput::make('sort_order')->numeric()->default(0),
                 Toggle::make('is_active')->default(true),
             ]);

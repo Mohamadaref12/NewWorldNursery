@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\Support\ImageUrl;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
 /** @mixin \App\Models\GalleryItem */
 class GalleryItemResource extends JsonResource
@@ -16,7 +16,7 @@ class GalleryItemResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'image' => $this->image ? Storage::disk('public')->url($this->image) : null,
+            'image' => ImageUrl::make($this->image),
             'alt' => $this->alt,
             'sort_order' => $this->sort_order,
         ];

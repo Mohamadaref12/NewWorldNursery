@@ -21,7 +21,7 @@ class ProgramForm
                 ColorPicker::make('color')->default('#F5E6A8')->label('Card background'),
                 TextInput::make('icon')->maxLength(50)->helperText('Emoji e.g. 👶'),
                 ColorPicker::make('icon_color')->default('#C8E6C9'),
-                FileUpload::make('image')->image()->directory('programs')->disk('public'),
+                FileUpload::make('image')->image()->directory('programs')->disk('images')->visibility('public'),
                 TextInput::make('sort_order')->numeric()->default(0),
                 Toggle::make('is_active')->default(true),
             ]);

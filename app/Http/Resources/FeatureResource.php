@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\Support\ImageUrl;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
 /** @mixin \App\Models\Feature */
 class FeatureResource extends JsonResource
@@ -18,9 +18,8 @@ class FeatureResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
-            'icon' => $this->icon,
             'icon_color' => $this->icon_color,
-            'icon_image' => $this->icon_image ? Storage::disk('public')->url($this->icon_image) : null,
+            'icon_image' => ImageUrl::make($this->icon_image),
             'sort_order' => $this->sort_order,
         ];
     }

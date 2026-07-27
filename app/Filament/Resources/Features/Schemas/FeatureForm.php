@@ -17,9 +17,8 @@ class FeatureForm
             ->components([
                 TextInput::make('title')->required()->maxLength(255),
                 Textarea::make('description')->rows(2),
-                TextInput::make('icon')->maxLength(100)->helperText('Optional emoji or icon key'),
                 ColorPicker::make('icon_color')->default('#D4EDDA'),
-                FileUpload::make('icon_image')->image()->directory('features')->disk('public'),
+                FileUpload::make('icon_image')->image()->directory('features')->disk('images')->visibility('public'),
                 TextInput::make('sort_order')->numeric()->default(0),
                 Toggle::make('is_active')->default(true),
             ]);

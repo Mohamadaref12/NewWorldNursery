@@ -77,7 +77,7 @@ class ManageSiteSettings extends Page
                     TextInput::make('hero_eyebrow')->maxLength(255)->label('Eyebrow')->placeholder('NEW WORLD NURSERY - DUBAI'),
                     TextInput::make('hero_title')->maxLength(255),
                     Textarea::make('hero_subtitle')->rows(3),
-                    FileUpload::make('hero_image')->image()->directory('site')->disk('public'),
+                    FileUpload::make('hero_image')->image()->directory('site')->disk('images')->visibility('public'),
                     TextInput::make('hero_cta_primary')->maxLength(100),
                     TextInput::make('hero_cta_secondary')->maxLength(100),
                 ])->columns(2),
@@ -86,7 +86,7 @@ class ManageSiteSettings extends Page
                     TextInput::make('about_title')->maxLength(255),
                     TextInput::make('about_highlight')->maxLength(255)->helperText('Words to highlight e.g. New World Nursery'),
                     Textarea::make('about_content')->rows(5),
-                    FileUpload::make('about_image')->image()->directory('site')->disk('public'),
+                    FileUpload::make('about_image')->image()->directory('site')->disk('images')->visibility('public'),
                     TextInput::make('about_cta')->maxLength(100),
                 ])->columns(2),
                 Section::make('Section Headings')->schema([

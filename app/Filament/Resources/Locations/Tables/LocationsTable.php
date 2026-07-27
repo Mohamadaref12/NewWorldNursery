@@ -17,7 +17,7 @@ class LocationsTable
     {
         return $table
             ->columns([
-                ImageColumn::make('image')->disk('public'),
+                ImageColumn::make('image')->disk('images'),
                 TextColumn::make('city')->searchable()->sortable(),
                 TextColumn::make('country'),
                 ColorColumn::make('badge_color'),

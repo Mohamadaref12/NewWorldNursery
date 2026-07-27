@@ -62,9 +62,11 @@ return [
         'images' => [
             'driver' => 'local',
             'root' => storage_path('app/public/image'),
-            'url' => rtrim(env('APP_URL', 'http://new-world-nursery.test'), '/') . '/storage/image',
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/') . '/storage/image',
             'visibility' => 'public',
             'directory_visibility' => 'public',
+            'throw' => false,
+            'report' => false,
         ],
 
     ],

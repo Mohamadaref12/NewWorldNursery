@@ -11,7 +11,6 @@ class Feature extends Model
     protected $fillable = [
         'title',
         'description',
-        'icon',
         'icon_color',
         'icon_image',
         'sort_order',

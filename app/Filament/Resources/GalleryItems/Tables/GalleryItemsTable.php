@@ -16,7 +16,7 @@ class GalleryItemsTable
     {
         return $table
             ->columns([
-                ImageColumn::make('image')->disk('public'),
+                ImageColumn::make('image')->disk('images'),
                 TextColumn::make('alt'),
                 TextColumn::make('sort_order')->sortable(),
                 IconColumn::make('is_active')->boolean(),

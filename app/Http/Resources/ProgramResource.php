@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\Support\ImageUrl;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
 /** @mixin \App\Models\Program */
 class ProgramResource extends JsonResource
@@ -22,7 +22,7 @@ class ProgramResource extends JsonResource
             'color' => $this->color,
             'icon' => $this->icon,
             'icon_color' => $this->icon_color,
-            'image' => $this->image ? Storage::disk('public')->url($this->image) : null,
+            'image' => ImageUrl::make($this->image),
             'sort_order' => $this->sort_order,
         ];
     }
