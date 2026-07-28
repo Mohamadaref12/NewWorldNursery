@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\FeatureController;
 use App\Http\Controllers\Api\GalleryController;
@@ -22,4 +23,7 @@ Route::get('/locations/{location}', [LocationController::class, 'show']);
 Route::get('/programs', [ProgramController::class, 'index']);
 Route::get('/programs/{program}', [ProgramController::class, 'show']);
 Route::get('/gallery', [GalleryController::class, 'index']);
+Route::get('/blogs', [BlogController::class, 'index']);
+Route::get('/blogs/latest', [BlogController::class, 'latest']);
+Route::get('/blogs/{blog}', [BlogController::class, 'show']);
 Route::post('/contact', [ContactController::class, 'store']);

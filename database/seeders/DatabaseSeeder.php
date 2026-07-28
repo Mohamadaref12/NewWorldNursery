@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             NurserySeeder::class,
             MomentsGallerySeeder::class,
+            BlogSeeder::class,
         ]);
     }
 }

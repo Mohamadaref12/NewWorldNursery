@@ -34,6 +34,9 @@ http://new-world-nursery.test/storage/image/{path}
 | `GET` | `/api/programs` | Programs list |
 | `GET` | `/api/programs/{id}` | Single program |
 | `GET` | `/api/gallery` | Gallery images |
+| `GET` | `/api/blogs` | All published blogs |
+| `GET` | `/api/blogs/latest` | Latest blogs (default 5) |
+| `GET` | `/api/blogs/{slug}` | Single blog by slug |
 | `POST` | `/api/contact` | Submit contact form |
 | `GET` | `/api/user` | Authenticated user (Bearer token) |
 
@@ -289,7 +292,105 @@ Use `settings.gallery.cta` + `settings.instagram_url` for the Instagram button.
 
 ---
 
-## 7. Contact Form (Submit Message)
+## 7. Blogs
+
+Only **active** posts with `published_at` in the past (or now) are returned. Sorted by `published_at` descending (newest first).
+
+### List all
+
+```http
+GET /api/blogs
+```
+
+### Latest posts
+
+```http
+GET /api/blogs/latest
+GET /api/blogs/latest?limit=10
+```
+
+| Query | Default | Notes |
+|-------|---------|--------|
+| `limit` | `5` | Min `1`, max `20` |
+
+### Single post
+
+```http
+GET /api/blogs/{slug}
+```
+
+Use the post `slug` (not the numeric id).
+
+### Success `200` (list / latest)
+
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "title": "Welcome to Our Nursery Blog",
+      "slug": "welcome-to-our-nursery-blog",
+      "excerpt": "A short summary for cards and listings.",
+      "content": "<p>Full HTML body from the admin editor.</p>",
+      "image": "http://new-world-nursery.test/storage/image/blogs/post.jpg",
+      "published_at": "2026-07-28T10:00:00+00:00"
+    }
+  ]
+}
+```
+
+### Success `200` (single)
+
+```json
+{
+  "data": {
+    "id": 1,
+    "title": "Welcome to Our Nursery Blog",
+    "slug": "welcome-to-our-nursery-blog",
+    "excerpt": "A short summary for cards and listings.",
+    "content": "<p>Full HTML body from the admin editor.</p>",
+    "image": "http://new-world-nursery.test/storage/image/blogs/post.jpg",
+    "published_at": "2026-07-28T10:00:00+00:00"
+  }
+}
+```
+
+| Field | Type | Notes |
+|-------|------|--------|
+| `slug` | string | Unique; used in `/api/blogs/{slug}` |
+| `excerpt` | string\|null | Short teaser for list cards |
+| `content` | string\|null | HTML from Filament RichEditor — render carefully |
+| `image` | string\|null | Full absolute image URL |
+| `published_at` | string\|null | ISO 8601 datetime |
+
+### Errors
+
+| Status | When |
+|--------|------|
+| `404` | Blog not found, inactive, or not yet published |
+
+### Suggested frontend usage
+
+```js
+// Homepage / sidebar: latest posts
+const latest = await fetch(`${BASE_URL}/api/blogs/latest?limit=3`, {
+  headers: { Accept: 'application/json' },
+}).then((r) => r.json());
+
+// Blog listing page
+const all = await fetch(`${BASE_URL}/api/blogs`, {
+  headers: { Accept: 'application/json' },
+}).then((r) => r.json());
+
+// Blog detail page
+const post = await fetch(`${BASE_URL}/api/blogs/${slug}`, {
+  headers: { Accept: 'application/json' },
+}).then((r) => r.json());
+```
+
+---
+
+## 8. Contact Form (Submit Message)
 
 ```http
 POST /api/contact
@@ -350,7 +451,7 @@ POST /api/contact
 
 ---
 
-## 8. Authenticated User (optional)
+## 9. Authenticated User (optional)
 
 ```http
 GET /api/user
@@ -412,10 +513,11 @@ if (res.status === 201) {
 
 ## Notes for frontend
 
-1. Lists are already sorted (`sort_order` ascending).
+1. Lists are already sorted (`sort_order` ascending). Blog lists are sorted by `published_at` descending.
 2. Inactive items are **not** returned by the API.
 3. Always use the image URL as returned — do not prepend `APP_URL` again.
 4. Nullable strings/images can be `null` — handle empty states.
-5. Postman collection is available in:
+5. Blog `content` is HTML — sanitize or use a trusted HTML renderer.
+6. Postman collection is available in:
    - `postman/New-World-Nursery-API.postman_collection.json`
    - `postman/New-World-Nursery-Local.postman_environment.json`
