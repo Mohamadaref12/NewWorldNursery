@@ -17,7 +17,7 @@
               { "key": "Accept", "value": "application/json" }
             ],
             "url": "{{baseUrl}}/api/home",
-            "description": "Returns homepage payload: settings, features, locations, programs, and gallery."
+            "description": "Returns homepage payload: settings, features, locations, programs, Instagram gallery, and Moments of Joy gallery."
           },
           "response": []
         }
@@ -34,7 +34,7 @@
               { "key": "Accept", "value": "application/json" }
             ],
             "url": "{{baseUrl}}/api/settings",
-            "description": "Returns site settings (hero, about, section headings, contact, footer)."
+            "description": "Returns site settings (hero, about, section headings, Instagram, Moments, contact, footer)."
           },
           "response": []
         }
@@ -119,14 +119,33 @@
       "name": "Gallery",
       "item": [
         {
-          "name": "List Gallery Items",
+          "name": "List Moments Gallery",
           "request": {
             "method": "GET",
             "header": [
               { "key": "Accept", "value": "application/json" }
             ],
             "url": "{{baseUrl}}/api/gallery",
-            "description": "Returns active gallery images with full image URLs."
+            "description": "Returns Moments of Joy gallery images (default type=moments)."
+          },
+          "response": []
+        },
+        {
+          "name": "List Instagram Feed",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/gallery?type=instagram",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "gallery"],
+              "query": [
+                { "key": "type", "value": "instagram" }
+              ]
+            },
+            "description": "Returns Instagram feed images (type=instagram)."
           },
           "response": []
         }

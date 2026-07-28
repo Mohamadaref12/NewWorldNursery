@@ -25,7 +25,12 @@ class HomeController extends Controller
                 'features' => FeatureResource::collection(Feature::query()->active()->get()),
                 'locations' => LocationResource::collection(Location::query()->active()->get()),
                 'programs' => ProgramResource::collection(Program::query()->active()->get()),
-                'gallery' => GalleryItemResource::collection(GalleryItem::query()->active()->get()),
+                'gallery' => GalleryItemResource::collection(
+                    GalleryItem::query()->instagram()->active()->get()
+                ),
+                'moments' => GalleryItemResource::collection(
+                    GalleryItem::query()->moments()->active()->get()
+                ),
             ],
         ]);
     }

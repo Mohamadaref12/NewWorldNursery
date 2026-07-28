@@ -57,6 +57,11 @@ class SiteSettingResource extends JsonResource
                 'subtitle' => $this->gallery_subtitle,
                 'cta' => $this->gallery_cta,
             ],
+            'moments' => [
+                'label' => $this->moments_label,
+                'title' => $this->moments_title,
+                'cta' => $this->moments_cta,
+            ],
             'contact' => [
                 'label' => $this->contact_label,
                 'title' => $this->contact_title,

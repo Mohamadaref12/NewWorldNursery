@@ -8,7 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class GalleryItem extends Model
 {
+    public const TYPE_INSTAGRAM = 'instagram';
+
+    public const TYPE_MOMENTS = 'moments';
+
     protected $fillable = [
+        'type',
         'image',
         'alt',
         'sort_order',
@@ -27,5 +32,17 @@ class GalleryItem extends Model
     protected function active(Builder $query): void
     {
         $query->where('is_active', true)->orderBy('sort_order');
+    }
+
+    #[Scope]
+    protected function instagram(Builder $query): void
+    {
+        $query->where('type', self::TYPE_INSTAGRAM);
+    }
+
+    #[Scope]
+    protected function moments(Builder $query): void
+    {
+        $query->where('type', self::TYPE_MOMENTS);
     }
 }

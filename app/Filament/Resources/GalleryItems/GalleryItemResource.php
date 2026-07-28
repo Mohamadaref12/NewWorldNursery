@@ -20,7 +20,11 @@ class GalleryItemResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
-    protected static ?string $navigationLabel = 'Gallery';
+    protected static ?string $navigationLabel = 'Gallery & Instagram';
+
+    protected static ?string $modelLabel = 'Gallery Image';
+
+    protected static ?string $pluralModelLabel = 'Gallery Images';
 
     protected static ?int $navigationSort = 6;
 

@@ -51,12 +51,17 @@ class NurserySeeder extends Seeder
             'programs_title_highlight' => 'age & stage',
             'programs_subtitle' => 'Play-led pathways from first steps to school readiness — each stage matched to how children learn best.',
 
-            // Gallery / Instagram
+            // Instagram feed section
             'gallery_label' => 'INSTAGRAM',
             'gallery_title' => 'Follow',
             'gallery_title_highlight' => 'Our Journey',
             'gallery_subtitle' => 'Peek into classroom moments, outdoor play, and the everyday joy of New World Nursery life.',
             'gallery_cta' => 'FOLLOW US ON INSTAGRAM',
+
+            // Moments of Joy gallery section
+            'moments_label' => 'GALLERY',
+            'moments_title' => 'Moments of Joy',
+            'moments_cta' => 'VIEW GALLERY',
 
             // Contact
             'contact_label' => 'PLAN A VISIT',
@@ -209,7 +214,8 @@ class NurserySeeder extends Seeder
             Program::query()->create($program + ['is_active' => true]);
         }
 
-        // Keep gallery empty so you can upload the 8 design photos from Filament.
-        GalleryItem::query()->delete();
+        // Instagram feed images stay empty (upload from Filament, type: Instagram).
+        // Moments of Joy images are seeded by MomentsGallerySeeder.
+        GalleryItem::query()->instagram()->delete();
     }
 }

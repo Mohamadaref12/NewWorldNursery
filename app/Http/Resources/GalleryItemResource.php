@@ -16,6 +16,7 @@ class GalleryItemResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'type' => $this->type,
             'image' => ImageUrl::make($this->image),
             'alt' => $this->alt,
             'sort_order' => $this->sort_order,

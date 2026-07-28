@@ -22,6 +22,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@newworldnursery.ae',
         ]);
 
-        $this->call(NurserySeeder::class);
+        $this->call([
+            NurserySeeder::class,
+            MomentsGallerySeeder::class,
+        ]);
     }
 }

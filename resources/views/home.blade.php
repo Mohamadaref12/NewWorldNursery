@@ -261,7 +261,47 @@
         </div>
     </section>
 
-    {{-- Gallery / Instagram --}}
+    {{-- Moments of Joy Gallery --}}
+    <section id="moments" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                @if ($settings->moments_label)
+                    <p class="text-nursery-teal font-bold text-sm tracking-[0.2em] uppercase mb-3">{{ $settings->moments_label }}</p>
+                @endif
+                <h2 class="text-3xl lg:text-4xl font-extrabold text-nursery-navy mb-4">
+                    {{ $settings->moments_title }}
+                </h2>
+            </div>
+
+            @if ($momentsItems->isNotEmpty())
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    @foreach ($momentsItems as $item)
+                        <div class="aspect-[4/5] rounded-3xl overflow-hidden bg-nursery-cream/40">
+                            <img src="{{ $imageUrl($item->image) }}" alt="{{ $item->alt ?? 'Gallery' }}" class="w-full h-full object-cover hover:scale-105 transition duration-300">
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    @foreach (['🧱', '🎨', '🍎', '📖'] as $emoji)
+                        <div class="aspect-[4/5] rounded-3xl bg-gradient-to-br from-nursery-blue/40 via-nursery-pink/30 to-nursery-yellow/40 flex items-center justify-center text-4xl">
+                            {{ $emoji }}
+                        </div>
+                    @endforeach
+                </div>
+                <p class="text-center text-sm text-gray-400 mt-4">Upload Moments images from Admin → Gallery & Instagram (type: Moments)</p>
+            @endif
+
+            <div class="text-center mt-10">
+                <a href="#moments"
+                    class="inline-flex items-center justify-center border-2 border-nursery-teal text-nursery-teal hover:bg-nursery-teal hover:text-white font-bold px-8 py-3 rounded-full transition">
+                    {{ $settings->moments_cta ?: 'VIEW GALLERY' }}
+                </a>
+            </div>
+        </div>
+    </section>
+
+    {{-- Instagram Feed --}}
     <section id="gallery" class="py-20 bg-nursery-cream/40">
         <div class="max-w-7xl mx-auto px-4">
             <div class="text-center max-w-3xl mx-auto mb-12">
@@ -283,7 +323,7 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     @foreach ($galleryItems as $item)
                         <div class="aspect-square rounded-2xl overflow-hidden bg-white shadow-sm">
-                            <img src="{{ $imageUrl($item->image) }}" alt="{{ $item->alt ?? 'Gallery' }}" class="w-full h-full object-cover hover:scale-105 transition duration-300">
+                            <img src="{{ $imageUrl($item->image) }}" alt="{{ $item->alt ?? 'Instagram' }}" class="w-full h-full object-cover hover:scale-105 transition duration-300">
                         </div>
                     @endforeach
                 </div>
@@ -295,7 +335,7 @@
                         </div>
                     @endforeach
                 </div>
-                <p class="text-center text-sm text-gray-400 mt-4">Upload gallery images from Admin → Gallery</p>
+                <p class="text-center text-sm text-gray-400 mt-4">Upload Instagram images from Admin → Gallery & Instagram (type: Instagram)</p>
             @endif
 
             <div class="text-center mt-10">
