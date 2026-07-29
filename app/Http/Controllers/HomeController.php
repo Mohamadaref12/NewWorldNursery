@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Feature;
 use App\Models\GalleryItem;
+use App\Models\InstagramPost;
 use App\Models\Location;
 use App\Models\Program;
 use App\Models\SiteSetting;
@@ -18,8 +19,8 @@ class HomeController extends Controller
             'features' => Feature::query()->active()->get(),
             'locations' => Location::query()->active()->get(),
             'programs' => Program::query()->active()->get(),
-            'momentsItems' => GalleryItem::query()->moments()->active()->get(),
-            'galleryItems' => GalleryItem::query()->instagram()->active()->get(),
+            'momentsItems' => GalleryItem::query()->with('category')->active()->get(),
+            'galleryItems' => InstagramPost::query()->active()->get(),
         ]);
     }
 }

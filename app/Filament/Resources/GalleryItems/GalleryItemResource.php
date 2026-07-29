@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class GalleryItemResource extends Resource
 {
@@ -20,13 +21,15 @@ class GalleryItemResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
-    protected static ?string $navigationLabel = 'Gallery & Instagram';
+    protected static ?string $navigationLabel = 'Gallery';
 
     protected static ?string $modelLabel = 'Gallery Image';
 
     protected static ?string $pluralModelLabel = 'Gallery Images';
 
-    protected static ?int $navigationSort = 6;
+    protected static string|UnitEnum|null $navigationGroup = 'Gallery';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

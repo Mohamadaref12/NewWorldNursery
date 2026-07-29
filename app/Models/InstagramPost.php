@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class GalleryItem extends Model
+class InstagramPost extends Model
 {
     protected $fillable = [
-        'gallery_category_id',
+        'instagram_media_id',
         'image',
         'alt',
+        'permalink',
         'sort_order',
         'is_active',
     ];
@@ -23,11 +23,6 @@ class GalleryItem extends Model
             'is_active' => 'boolean',
             'sort_order' => 'integer',
         ];
-    }
-
-    public function category(): BelongsTo
-    {
-        return $this->belongsTo(GalleryCategory::class, 'gallery_category_id');
     }
 
     #[Scope]

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\GalleryItems\Schemas;
 
-use App\Models\GalleryItem;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -15,14 +14,19 @@ class GalleryItemForm
     {
         return $schema
             ->components([
-                Select::make('type')
-                    ->options([
-                        GalleryItem::TYPE_MOMENTS => 'Moments of Joy (Gallery)',
-                        GalleryItem::TYPE_INSTAGRAM => 'Instagram Feed',
-                    ])
-                    ->default(GalleryItem::TYPE_MOMENTS)
+                Select::make('gallery_category_id')
+                    ->label('Category')
+                    ->relationship('category', 'name')
+                    ->searchable()
+                    ->preload()
                     ->required()
-                    ->native(false),
+                    ->native(false)
+                    ->createOptionForm([
+                        TextInput::make('name')->required()->maxLength(255),
+                        TextInput::make('slug')->maxLength(255)->helperText('Leave empty to auto-generate'),
+                        TextInput::make('sort_order')->numeric()->default(0),
+                        Toggle::make('is_active')->default(true),
+                    ]),
                 FileUpload::make('image')->image()->required()->directory('gallery')->disk('images')->visibility('public'),
                 TextInput::make('alt')->maxLength(255),
                 TextInput::make('sort_order')->numeric()->default(0),

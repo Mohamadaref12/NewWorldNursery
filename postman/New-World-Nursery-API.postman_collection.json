@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "nwn-api-collection",
     "name": "New World Nursery API",
-    "description": "Public API endpoints for New World Nursery (Laravel).",
+    "description": "Public API endpoints for New World Nursery (Laravel).\n\nDocs:\n- docs/FRONTEND_API.md\n- docs/BLOG_API.md\n- docs/GALLERY_API.md\n- docs/INSTAGRAM_INTEGRATION.md",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -17,7 +17,7 @@
               { "key": "Accept", "value": "application/json" }
             ],
             "url": "{{baseUrl}}/api/home",
-            "description": "Returns homepage payload: settings, features, locations, programs, Instagram gallery, and Moments of Joy gallery."
+            "description": "Homepage payload: settings, features, locations, programs, gallery_categories, gallery_items/moments, instagram/gallery."
           },
           "response": []
         }
@@ -119,33 +119,130 @@
       "name": "Gallery",
       "item": [
         {
-          "name": "List Moments Gallery",
+          "name": "List Gallery Images",
           "request": {
             "method": "GET",
             "header": [
               { "key": "Accept", "value": "application/json" }
             ],
             "url": "{{baseUrl}}/api/gallery",
-            "description": "Returns Moments of Joy gallery images (default type=moments)."
+            "description": "Returns all active gallery images (with category). From gallery_items table."
           },
           "response": []
         },
         {
-          "name": "List Instagram Feed",
+          "name": "List Gallery Images by Category",
           "request": {
             "method": "GET",
             "header": [
               { "key": "Accept", "value": "application/json" }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/gallery?type=instagram",
+              "raw": "{{baseUrl}}/api/gallery?category={{categorySlug}}",
               "host": ["{{baseUrl}}"],
               "path": ["api", "gallery"],
               "query": [
-                { "key": "type", "value": "instagram" }
+                {
+                  "key": "category",
+                  "value": "{{categorySlug}}",
+                  "description": "Category slug or numeric id"
+                }
               ]
             },
-            "description": "Returns Instagram feed images (type=instagram)."
+            "description": "Returns gallery images filtered by category slug or id."
+          },
+          "response": []
+        },
+        {
+          "name": "List Gallery Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/gallery/categories",
+            "description": "Returns all active categories, each with nested active items."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category with Images",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/gallery/categories/{{categorySlug}}",
+            "description": "Returns one category by slug with its active images in items[]."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Instagram",
+      "item": [
+        {
+          "name": "List Instagram Posts",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/instagram",
+            "description": "Returns synced Instagram posts from instagram_posts (separate from gallery). Empty until Connect + Sync in admin."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Blogs",
+      "item": [
+        {
+          "name": "List Blogs",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/blogs",
+            "description": "Returns all published active blogs (newest first)."
+          },
+          "response": []
+        },
+        {
+          "name": "Latest Blogs",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/blogs/latest?limit={{blogLimit}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "blogs", "latest"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "{{blogLimit}}",
+                  "description": "Default 5, min 1, max 20"
+                }
+              ]
+            },
+            "description": "Returns the latest published blogs."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Blog by Slug",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/blogs/{{blogSlug}}",
+            "description": "Returns a single published blog by slug."
           },
           "response": []
         }

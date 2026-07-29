@@ -33,7 +33,10 @@ http://new-world-nursery.test/storage/image/{path}
 | `GET` | `/api/locations/{id}` | Single location |
 | `GET` | `/api/programs` | Programs list |
 | `GET` | `/api/programs/{id}` | Single program |
-| `GET` | `/api/gallery` | Gallery images |
+| `GET` | `/api/gallery` | Categorized gallery images |
+| `GET` | `/api/gallery/categories` | Gallery categories (+ items) |
+| `GET` | `/api/gallery/categories/{slug}` | One category + its images |
+| `GET` | `/api/instagram` | Synced Instagram posts |
 | `GET` | `/api/blogs` | All published blogs |
 | `GET` | `/api/blogs/latest` | Latest blogs (default 5) |
 | `GET` | `/api/blogs/{slug}` | Single blog by slug |
@@ -267,13 +270,16 @@ GET /api/programs/{id}
 
 ---
 
-## 6. Gallery
+## 6. Gallery (categorized images)
 
 ```http
 GET /api/gallery
+GET /api/gallery?category=moments-of-joy
+GET /api/gallery/categories
+GET /api/gallery/categories/{slug}
 ```
 
-### Success `200`
+### Gallery items `200`
 
 ```json
 {
@@ -282,11 +288,90 @@ GET /api/gallery
       "id": 1,
       "image": "http://new-world-nursery.test/storage/image/gallery/1.jpg",
       "alt": "Classroom moment",
-      "sort_order": 1
+      "sort_order": 1,
+      "category": {
+        "id": 1,
+        "name": "Moments of Joy",
+        "slug": "moments-of-joy"
+      }
     }
   ]
 }
 ```
+
+### Categories list `200`
+
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Moments of Joy",
+      "slug": "moments-of-joy",
+      "sort_order": 1,
+      "items": []
+    }
+  ]
+}
+```
+
+### Single category with its images `200`
+
+```http
+GET /api/gallery/categories/moments-of-joy
+```
+
+```json
+{
+  "data": {
+    "id": 1,
+    "name": "Moments of Joy",
+    "slug": "moments-of-joy",
+    "sort_order": 1,
+    "items": [
+      {
+        "id": 1,
+        "image": "http://new-world-nursery.test/storage/image/moments/abc.jpg",
+        "alt": "Colorful building blocks",
+        "sort_order": 1
+      }
+    ]
+  }
+}
+```
+
+| Status | When |
+|--------|------|
+| `404` | Category not found or inactive |
+
+---
+
+## 6b. Instagram feed
+
+```http
+GET /api/instagram
+```
+
+Synced Instagram posts (separate table from gallery).
+
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "image": "http://new-world-nursery.test/storage/image/instagram/123.jpg",
+      "alt": "Caption excerpt",
+      "permalink": "https://www.instagram.com/p/...",
+      "sort_order": 0
+    }
+  ]
+}
+```
+
+On `GET /api/home`:
+- `gallery` / `instagram` → Instagram posts (BC)
+- `moments` / `gallery_items` → categorized gallery
+- `gallery_categories` → category list
 
 Use `settings.gallery.cta` + `settings.instagram_url` for the Instagram button.
 

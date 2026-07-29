@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\GalleryCategory;
 use App\Models\GalleryItem;
 use App\Models\SiteSetting;
 use Illuminate\Database\Seeder;
@@ -11,7 +12,7 @@ use Illuminate\Support\Str;
 class MomentsGallerySeeder extends Seeder
 {
     /**
-     * Seed Moments of Joy gallery section (separate from Instagram).
+     * Seed gallery categories and Moments of Joy images.
      */
     public function run(): void
     {
@@ -21,16 +22,34 @@ class MomentsGallerySeeder extends Seeder
             'moments_cta' => 'VIEW GALLERY',
         ]);
 
-        GalleryItem::query()->where('type', GalleryItem::TYPE_MOMENTS)->delete();
+        $moments = GalleryCategory::query()->updateOrCreate(
+            ['slug' => 'moments-of-joy'],
+            [
+                'name' => 'Moments of Joy',
+                'sort_order' => 1,
+                'is_active' => true,
+            ]
+        );
+
+        $classroom = GalleryCategory::query()->updateOrCreate(
+            ['slug' => 'classroom'],
+            [
+                'name' => 'Classroom',
+                'sort_order' => 2,
+                'is_active' => true,
+            ]
+        );
+
+        GalleryItem::query()->delete();
 
         $disk = Storage::disk('images');
         $disk->makeDirectory('moments');
 
         $items = [
-            ['alt' => 'Colorful building blocks', 'colors' => [0xF5, 0xA6, 0x23]],
-            ['alt' => 'Child with face paint smiling', 'colors' => [0xE8, 0xA0, 0xB0]],
-            ['alt' => 'Books, apple and ABC blocks', 'colors' => [0x2E, 0x9E, 0x94]],
-            ['alt' => 'Teacher and child reading together', 'colors' => [0xB3, 0x9D, 0xDB]],
+            ['category' => $moments, 'alt' => 'Colorful building blocks', 'colors' => [0xF5, 0xA6, 0x23]],
+            ['category' => $moments, 'alt' => 'Child with face paint smiling', 'colors' => [0xE8, 0xA0, 0xB0]],
+            ['category' => $classroom, 'alt' => 'Books, apple and ABC blocks', 'colors' => [0x2E, 0x9E, 0x94]],
+            ['category' => $classroom, 'alt' => 'Teacher and child reading together', 'colors' => [0xB3, 0x9D, 0xDB]],
         ];
 
         foreach ($items as $index => $item) {
@@ -38,7 +57,7 @@ class MomentsGallerySeeder extends Seeder
             $disk->put($filename, $this->makePlaceholderJpeg($item['colors'], $item['alt']));
 
             GalleryItem::query()->create([
-                'type' => GalleryItem::TYPE_MOMENTS,
+                'gallery_category_id' => $item['category']->id,
                 'image' => $filename,
                 'alt' => $item['alt'],
                 'sort_order' => $index + 1,
@@ -46,7 +65,7 @@ class MomentsGallerySeeder extends Seeder
             ]);
         }
 
-        $this->command?->info('Moments of Joy gallery seeded ('.GalleryItem::query()->moments()->count().' images).');
+        $this->command?->info('Gallery seeded ('.GalleryItem::query()->count().' images, '.GalleryCategory::query()->count().' categories).');
     }
 
     /**

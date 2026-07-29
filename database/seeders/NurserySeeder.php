@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Feature;
-use App\Models\GalleryItem;
+use App\Models\InstagramPost;
 use App\Models\Location;
 use App\Models\Program;
 use App\Models\SiteSetting;
@@ -214,8 +214,8 @@ class NurserySeeder extends Seeder
             Program::query()->create($program + ['is_active' => true]);
         }
 
-        // Instagram feed images stay empty (upload from Filament, type: Instagram).
-        // Moments of Joy images are seeded by MomentsGallerySeeder.
-        GalleryItem::query()->instagram()->delete();
+        // Instagram feed images come from Instagram sync (instagram_posts).
+        // Gallery / Moments images are seeded by MomentsGallerySeeder.
+        InstagramPost::query()->delete();
     }
 }

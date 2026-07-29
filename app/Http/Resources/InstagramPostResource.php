@@ -6,8 +6,8 @@ use App\Support\ImageUrl;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin \App\Models\GalleryItem */
-class GalleryItemResource extends JsonResource
+/** @mixin \App\Models\InstagramPost */
+class InstagramPostResource extends JsonResource
 {
     /**
      * @return array<string, mixed>
@@ -18,12 +18,8 @@ class GalleryItemResource extends JsonResource
             'id' => $this->id,
             'image' => ImageUrl::make($this->image),
             'alt' => $this->alt,
+            'permalink' => $this->permalink,
             'sort_order' => $this->sort_order,
-            'category' => $this->whenLoaded('category', fn () => $this->category ? [
-                'id' => $this->category->id,
-                'name' => $this->category->name,
-                'slug' => $this->category->slug,
-            ] : null),
         ];
     }
 }
