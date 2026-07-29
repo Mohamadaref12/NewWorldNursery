@@ -3,7 +3,7 @@
 Base URL (local):
 
 ```text
-http://new-world-nursery.test/api
+https://neworld-backend.sawatech.ae/api
 ```
 
 Send header:
@@ -15,7 +15,7 @@ Accept: application/json
 Image fields return a **full absolute URL**, or `null` if empty:
 
 ```text
-http://new-world-nursery.test/storage/image/{path}
+https://neworld-backend.sawatech.ae/storage/image/{path}
 ```
 
 Gallery and Instagram are **separate tables**:
@@ -61,7 +61,7 @@ GET /api/gallery?category=1
   "data": [
     {
       "id": 1,
-      "image": "http://new-world-nursery.test/storage/image/moments/abc.jpg",
+      "image": "https://neworld-backend.sawatech.ae/storage/image/moments/abc.jpg",
       "alt": "Colorful building blocks",
       "sort_order": 1,
       "category": {
@@ -103,7 +103,7 @@ Returns every active category, each with its active images inside `items`.
       "items": [
         {
           "id": 1,
-          "image": "http://new-world-nursery.test/storage/image/moments/abc.jpg",
+          "image": "https://neworld-backend.sawatech.ae/storage/image/moments/abc.jpg",
           "alt": "Colorful building blocks",
           "sort_order": 1
         }
@@ -142,13 +142,13 @@ Use the category **slug** (e.g. `moments-of-joy`).
     "items": [
       {
         "id": 1,
-        "image": "http://new-world-nursery.test/storage/image/moments/abc.jpg",
+        "image": "https://neworld-backend.sawatech.ae/storage/image/moments/abc.jpg",
         "alt": "Colorful building blocks",
         "sort_order": 1
       },
       {
         "id": 2,
-        "image": "http://new-world-nursery.test/storage/image/moments/def.jpg",
+        "image": "https://neworld-backend.sawatech.ae/storage/image/moments/def.jpg",
         "alt": "Child with face paint smiling",
         "sort_order": 2
       }
@@ -181,7 +181,7 @@ Stored in `instagram_posts`, files under `storage/app/public/image/instagram/`.
   "data": [
     {
       "id": 1,
-      "image": "http://new-world-nursery.test/storage/image/instagram/17841405822304914.jpg",
+      "image": "https://neworld-backend.sawatech.ae/storage/image/instagram/17841405822304914.jpg",
       "alt": "Caption excerpt from the post",
       "permalink": "https://www.instagram.com/p/ABC123/",
       "sort_order": 0
@@ -227,7 +227,7 @@ Section copy/titles still come from `settings`:
 ## Frontend examples
 
 ```js
-const BASE_URL = 'http://new-world-nursery.test';
+const BASE_URL = 'https://neworld-backend.sawatech.ae';
 const headers = { Accept: 'application/json' };
 
 // All gallery images
