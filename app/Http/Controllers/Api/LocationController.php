@@ -12,13 +12,15 @@ class LocationController extends Controller
     public function index(): AnonymousResourceCollection
     {
         return LocationResource::collection(
-            Location::query()->active()->get()
+            Location::query()->withTranslation()->active()->get()
         );
     }
 
     public function show(Location $location): LocationResource
     {
         abort_unless($location->is_active, 404);
+
+        $location->loadMissing('translations');
 
         return new LocationResource($location);
     }

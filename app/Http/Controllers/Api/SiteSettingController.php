@@ -12,6 +12,7 @@ class SiteSettingController extends Controller
     public function show(): JsonResponse
     {
         return response()->json([
+            'locale' => app()->getLocale(),
             'data' => new SiteSettingResource(SiteSetting::current()),
         ]);
     }

@@ -12,7 +12,7 @@ class InstagramController extends Controller
     public function index(): AnonymousResourceCollection
     {
         return InstagramPostResource::collection(
-            InstagramPost::query()->active()->get()
+            InstagramPost::query()->withTranslation()->active()->get()
         );
     }
 }

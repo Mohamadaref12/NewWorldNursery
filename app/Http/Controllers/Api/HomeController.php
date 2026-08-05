@@ -23,17 +23,22 @@ class HomeController extends Controller
 {
     public function __invoke(): JsonResponse
     {
-        $galleryItems = GalleryItem::query()->with('category')->active()->get();
-        $instagramPosts = InstagramPost::query()->active()->get();
+        $galleryItems = GalleryItem::query()
+            ->withTranslation()
+            ->with(['category' => fn ($q) => $q->withTranslation()])
+            ->active()
+            ->get();
+        $instagramPosts = InstagramPost::query()->withTranslation()->active()->get();
 
         return response()->json([
+            'locale' => app()->getLocale(),
             'data' => [
                 'settings' => new SiteSettingResource(SiteSetting::current()),
-                'features' => FeatureResource::collection(Feature::query()->active()->get()),
-                'locations' => LocationResource::collection(Location::query()->active()->get()),
-                'programs' => ProgramResource::collection(Program::query()->active()->get()),
+                'features' => FeatureResource::collection(Feature::query()->withTranslation()->active()->get()),
+                'locations' => LocationResource::collection(Location::query()->withTranslation()->active()->get()),
+                'programs' => ProgramResource::collection(Program::query()->withTranslation()->active()->get()),
                 'gallery_categories' => GalleryCategoryResource::collection(
-                    GalleryCategory::query()->active()->get()
+                    GalleryCategory::query()->withTranslation()->active()->get()
                 ),
                 // Categorized site gallery (Moments of Joy, etc.)
                 'gallery_items' => GalleryItemResource::collection($galleryItems),

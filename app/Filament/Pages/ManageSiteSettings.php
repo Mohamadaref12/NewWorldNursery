@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Forms\LocaleTabs;
 use App\Models\SiteSetting;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -47,7 +48,24 @@ class ManageSiteSettings extends Page
 
     protected function fillForm(): void
     {
-        $this->form->fill(SiteSetting::current()->attributesToArray());
+        $settings = SiteSetting::current();
+        $settings->loadMissing('translations');
+
+        $data = $settings->attributesToArray();
+
+        foreach (['en', 'ar'] as $locale) {
+            $translation = $settings->translation($locale);
+
+            foreach ($settings->getTranslatedAttributes() as $attribute) {
+                $data[$locale][$attribute] = $translation?->getAttribute($attribute);
+            }
+        }
+
+        foreach ($settings->getTranslatedAttributes() as $attribute) {
+            unset($data[$attribute]);
+        }
+
+        $this->form->fill($data);
     }
 
     public function defaultForm(Schema $schema): Schema
@@ -62,64 +80,83 @@ class ManageSiteSettings extends Page
     {
         return $schema
             ->components([
-                Section::make('General')->schema([
-                    TextInput::make('site_name')->required()->maxLength(255),
+                LocaleTabs::make(
+                    $this->translationSections('en'),
+                    $this->translationSections('ar', rtl: true),
+                ),
+                Section::make('Contact details & media')->schema([
                     TextInput::make('top_bar_phone')->tel()->maxLength(50),
                     TextInput::make('top_bar_email')->email()->maxLength(255),
-                ])->columns(3),
+                    TextInput::make('contact_email')->email()->maxLength(255),
+                    TextInput::make('contact_phone')->tel()->maxLength(50),
+                    TextInput::make('contact_website')->url()->maxLength(255),
+                    FileUpload::make('hero_image')->image()->directory('site')->disk('images')->visibility('public'),
+                    FileUpload::make('about_image')->image()->directory('site')->disk('images')->visibility('public'),
+                ])->columns(2)->columnSpanFull(),
                 Section::make('Social Media')->schema([
                     TextInput::make('facebook_url')->url()->maxLength(255),
                     TextInput::make('instagram_url')->url()->maxLength(255),
                     TextInput::make('twitter_url')->url()->maxLength(255),
                     TextInput::make('youtube_url')->url()->maxLength(255),
-                ])->columns(2),
-                Section::make('Hero Section')->schema([
-                    TextInput::make('hero_eyebrow')->maxLength(255)->label('Eyebrow')->placeholder('NEW WORLD NURSERY - DUBAI'),
-                    TextInput::make('hero_title')->maxLength(255),
-                    Textarea::make('hero_subtitle')->rows(3),
-                    FileUpload::make('hero_image')->image()->directory('site')->disk('images')->visibility('public'),
-                    TextInput::make('hero_cta_primary')->maxLength(100),
-                    TextInput::make('hero_cta_secondary')->maxLength(100),
-                ])->columns(2),
-                Section::make('About Section')->schema([
-                    TextInput::make('about_label')->maxLength(100)->placeholder('ABOUT US'),
-                    TextInput::make('about_title')->maxLength(255),
-                    TextInput::make('about_highlight')->maxLength(255)->helperText('Words to highlight e.g. New World Nursery'),
-                    Textarea::make('about_content')->rows(5),
-                    FileUpload::make('about_image')->image()->directory('site')->disk('images')->visibility('public'),
-                    TextInput::make('about_cta')->maxLength(100),
-                ])->columns(2),
-                Section::make('Section Headings')->schema([
-                    TextInput::make('locations_label')->maxLength(100)->placeholder('OUR LOCATIONS'),
-                    TextInput::make('locations_title')->maxLength(255),
-                    TextInput::make('locations_title_highlight')->maxLength(100)->placeholder('the region'),
-                    TextInput::make('locations_subtitle')->maxLength(500),
-                    TextInput::make('programs_label')->maxLength(100)->placeholder('OUR PROGRAMS'),
-                    TextInput::make('programs_title')->maxLength(255),
-                    TextInput::make('programs_title_highlight')->maxLength(100)->placeholder('age & stage'),
-                    TextInput::make('programs_subtitle')->maxLength(500),
-                    TextInput::make('gallery_label')->maxLength(100)->placeholder('INSTAGRAM')->label('Instagram label'),
-                    TextInput::make('gallery_title')->maxLength(255)->label('Instagram title'),
-                    TextInput::make('gallery_title_highlight')->maxLength(100)->placeholder('Our Journey')->label('Instagram title highlight'),
-                    TextInput::make('gallery_subtitle')->maxLength(500)->label('Instagram subtitle'),
-                    TextInput::make('gallery_cta')->maxLength(100)->label('Instagram CTA'),
-                    TextInput::make('moments_label')->maxLength(100)->placeholder('GALLERY')->label('Moments label'),
-                    TextInput::make('moments_title')->maxLength(255)->placeholder('Moments of Joy')->label('Moments title'),
-                    TextInput::make('moments_cta')->maxLength(100)->placeholder('VIEW GALLERY')->label('Moments CTA'),
-                ])->columns(2),
-                Section::make('Contact & Footer')->schema([
-                    TextInput::make('contact_label')->maxLength(100)->placeholder('PLAN A VISIT'),
-                    TextInput::make('contact_title')->maxLength(255),
-                    TextInput::make('contact_title_highlight')->maxLength(100)->placeholder('Our Team'),
-                    TextInput::make('contact_subtitle')->maxLength(500),
-                    TextInput::make('contact_email')->email()->maxLength(255),
-                    TextInput::make('contact_phone')->tel()->maxLength(50),
-                    Textarea::make('contact_address')->rows(2),
-                    TextInput::make('contact_website')->url()->maxLength(255),
-                    Textarea::make('footer_about')->rows(3),
-                    TextInput::make('newsletter_title')->maxLength(255),
-                ])->columns(2),
+                ])->columns(2)->columnSpanFull(),
             ]);
+    }
+
+    /**
+     * @return array<int, mixed>
+     */
+    protected function translationSections(string $locale, bool $rtl = false): array
+    {
+        $attrs = $rtl ? ['dir' => 'rtl'] : [];
+        $input = fn (TextInput $field): TextInput => $rtl ? $field->extraInputAttributes($attrs) : $field;
+        $area = fn (Textarea $field): Textarea => $rtl ? $field->extraInputAttributes($attrs) : $field;
+
+        return [
+            Section::make($rtl ? 'عام' : 'General')->schema([
+                $input(TextInput::make("{$locale}.site_name")->label($rtl ? 'اسم الموقع' : 'Site name')->required()->maxLength(255)),
+            ]),
+            Section::make($rtl ? 'الهيرو' : 'Hero Section')->schema([
+                $input(TextInput::make("{$locale}.hero_eyebrow")->label($rtl ? 'العنوان الفرعي العلوي' : 'Eyebrow')->maxLength(255)),
+                $input(TextInput::make("{$locale}.hero_title")->label($rtl ? 'العنوان' : 'Title')->maxLength(255)),
+                $area(Textarea::make("{$locale}.hero_subtitle")->label($rtl ? 'الوصف' : 'Subtitle')->rows(3)),
+                $input(TextInput::make("{$locale}.hero_cta_primary")->label($rtl ? 'الزر الأساسي' : 'Primary CTA')->maxLength(100)),
+                $input(TextInput::make("{$locale}.hero_cta_secondary")->label($rtl ? 'الزر الثانوي' : 'Secondary CTA')->maxLength(100)),
+            ])->columns(2),
+            Section::make($rtl ? 'من نحن' : 'About Section')->schema([
+                $input(TextInput::make("{$locale}.about_label")->label($rtl ? 'التصنيف' : 'Label')->maxLength(100)),
+                $input(TextInput::make("{$locale}.about_title")->label($rtl ? 'العنوان' : 'Title')->maxLength(255)),
+                $input(TextInput::make("{$locale}.about_highlight")->label($rtl ? 'التظليل' : 'Highlight')->maxLength(255)),
+                $area(Textarea::make("{$locale}.about_content")->label($rtl ? 'المحتوى' : 'Content')->rows(5)),
+                $input(TextInput::make("{$locale}.about_cta")->label($rtl ? 'الزر' : 'CTA')->maxLength(100)),
+            ])->columns(2),
+            Section::make($rtl ? 'عناوين الأقسام' : 'Section Headings')->schema([
+                $input(TextInput::make("{$locale}.locations_label")->label($rtl ? 'تصنيف المواقع' : 'Locations label')->maxLength(100)),
+                $input(TextInput::make("{$locale}.locations_title")->label($rtl ? 'عنوان المواقع' : 'Locations title')->maxLength(255)),
+                $input(TextInput::make("{$locale}.locations_title_highlight")->label($rtl ? 'تظليل المواقع' : 'Locations highlight')->maxLength(100)),
+                $input(TextInput::make("{$locale}.locations_subtitle")->label($rtl ? 'وصف المواقع' : 'Locations subtitle')->maxLength(500)),
+                $input(TextInput::make("{$locale}.programs_label")->label($rtl ? 'تصنيف البرامج' : 'Programs label')->maxLength(100)),
+                $input(TextInput::make("{$locale}.programs_title")->label($rtl ? 'عنوان البرامج' : 'Programs title')->maxLength(255)),
+                $input(TextInput::make("{$locale}.programs_title_highlight")->label($rtl ? 'تظليل البرامج' : 'Programs highlight')->maxLength(100)),
+                $input(TextInput::make("{$locale}.programs_subtitle")->label($rtl ? 'وصف البرامج' : 'Programs subtitle')->maxLength(500)),
+                $input(TextInput::make("{$locale}.gallery_label")->label($rtl ? 'تصنيف إنستغرام' : 'Instagram label')->maxLength(100)),
+                $input(TextInput::make("{$locale}.gallery_title")->label($rtl ? 'عنوان إنستغرام' : 'Instagram title')->maxLength(255)),
+                $input(TextInput::make("{$locale}.gallery_title_highlight")->label($rtl ? 'تظليل إنستغرام' : 'Instagram highlight')->maxLength(100)),
+                $input(TextInput::make("{$locale}.gallery_subtitle")->label($rtl ? 'وصف إنستغرام' : 'Instagram subtitle')->maxLength(500)),
+                $input(TextInput::make("{$locale}.gallery_cta")->label($rtl ? 'زر إنستغرام' : 'Instagram CTA')->maxLength(100)),
+                $input(TextInput::make("{$locale}.moments_label")->label($rtl ? 'تصنيف المعرض' : 'Moments label')->maxLength(100)),
+                $input(TextInput::make("{$locale}.moments_title")->label($rtl ? 'عنوان المعرض' : 'Moments title')->maxLength(255)),
+                $input(TextInput::make("{$locale}.moments_cta")->label($rtl ? 'زر المعرض' : 'Moments CTA')->maxLength(100)),
+            ])->columns(2),
+            Section::make($rtl ? 'التواصل والتذييل' : 'Contact & Footer')->schema([
+                $input(TextInput::make("{$locale}.contact_label")->label($rtl ? 'التصنيف' : 'Label')->maxLength(100)),
+                $input(TextInput::make("{$locale}.contact_title")->label($rtl ? 'العنوان' : 'Title')->maxLength(255)),
+                $input(TextInput::make("{$locale}.contact_title_highlight")->label($rtl ? 'التظليل' : 'Highlight')->maxLength(100)),
+                $input(TextInput::make("{$locale}.contact_subtitle")->label($rtl ? 'الوصف' : 'Subtitle')->maxLength(500)),
+                $area(Textarea::make("{$locale}.contact_address")->label($rtl ? 'العنوان' : 'Address')->rows(2)),
+                $area(Textarea::make("{$locale}.footer_about")->label($rtl ? 'نبذة التذييل' : 'Footer about')->rows(3)),
+                $input(TextInput::make("{$locale}.newsletter_title")->label($rtl ? 'عنوان النشرة' : 'Newsletter title')->maxLength(255)),
+            ])->columns(2),
+        ];
     }
 
     public function content(Schema $schema): Schema

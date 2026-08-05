@@ -1,5 +1,7 @@
 # New World Nursery — Frontend API Guide
 
+> **Localization (EN / AR):** see **[FRONTEND_TRANSLATIONS.md](./FRONTEND_TRANSLATIONS.md)** for what changed and what the frontend must update.
+
 Base URL (local):
 
 ```text
@@ -13,6 +15,17 @@ Send header:
 Accept: application/json
 Content-Type: application/json
 ```
+
+### Locale (required for translated content)
+
+```http
+GET /api/home?locale=ar
+X-Locale: ar
+```
+
+Supported: `en` (default), `ar`.  
+Response header: `Content-Language`.  
+`/api/home` and `/api/settings` also return `"locale"` in the JSON body.
 
 Image fields always return a **full absolute URL**, or `null` if empty:
 
@@ -57,16 +70,22 @@ GET /api/home
 
 ```json
 {
+  "locale": "en",
   "data": {
     "settings": { "...": "see Site Settings shape below" },
     "features": [],
     "locations": [],
     "programs": [],
+    "gallery_categories": [],
+    "gallery_items": [],
+    "moments": [],
+    "instagram": [],
     "gallery": []
   }
 }
 ```
 
+Pass `?locale=ar` (or `X-Locale: ar`) to receive Arabic strings where translations exist.
 ---
 
 ## 2. Get Site Settings
@@ -79,6 +98,7 @@ GET /api/settings
 
 ```json
 {
+  "locale": "en",
   "data": {
     "site_name": "New World Nursery",
     "top_bar_phone": "+971 50 123 4567",
@@ -138,6 +158,7 @@ GET /api/settings
 }
 ```
 
+Text fields above (except phones/emails/URLs/images) are **locale-aware**. See [FRONTEND_TRANSLATIONS.md](./FRONTEND_TRANSLATIONS.md).
 ### UI mapping tips
 
 - `*_highlight` fields are the words that should be styled with the teal highlight/brush effect.
@@ -604,5 +625,6 @@ if (res.status === 201) {
 4. Nullable strings/images can be `null` — handle empty states.
 5. Blog `content` is HTML — sanitize or use a trusted HTML renderer.
 6. Postman collection is available in:
-   - `postman/New-World-Nursery-API.postman_collection.json`
-   - `postman/New-World-Nursery-Local.postman_environment.json`
+   - `postman/New-World-Nursery-API.postman_collection.json` (includes **i18n** folder + `locale` on all GETs)
+   - `postman/New-World-Nursery-Local.postman_environment.json` (includes `locale` variable)
+7. Full i18n guide for frontend: [FRONTEND_TRANSLATIONS.md](./FRONTEND_TRANSLATIONS.md)

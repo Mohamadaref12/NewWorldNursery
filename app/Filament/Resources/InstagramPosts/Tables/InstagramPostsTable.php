@@ -22,7 +22,10 @@ class InstagramPostsTable
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make('alt')
-                    ->searchable(),
+                    ->searchable(query: fn ($query, string $search) => $query->whereHas(
+                        'translations',
+                        fn ($q) => $q->where('alt', 'like', "%{$search}%")
+                    )),
                 TextColumn::make('permalink')
                     ->limit(40)
                     ->toggleable(isToggledHiddenByDefault: true),

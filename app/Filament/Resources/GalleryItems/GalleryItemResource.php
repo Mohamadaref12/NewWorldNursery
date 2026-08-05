@@ -48,6 +48,11 @@ class GalleryItemResource extends Resource
         ];
     }
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->with(['translations', 'category.translations']);
+    }
+
     public static function getPages(): array
     {
         return [

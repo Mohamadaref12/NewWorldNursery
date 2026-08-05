@@ -16,7 +16,12 @@ class FeaturesTable
     {
         return $table
             ->columns([
-                TextColumn::make('title')->searchable()->sortable(),
+                TextColumn::make('title')
+                    ->searchable(query: fn ($query, string $search) => $query->whereHas(
+                        'translations',
+                        fn ($q) => $q->where('title', 'like', "%{$search}%")
+                    ))
+                    ->sortable(false),
                 TextColumn::make('description')->limit(40),
                 ColorColumn::make('icon_color'),
                 TextColumn::make('sort_order')->sortable(),

@@ -18,7 +18,13 @@ class LocationsTable
         return $table
             ->columns([
                 ImageColumn::make('image')->disk('images'),
-                TextColumn::make('city')->searchable()->sortable(),
+                TextColumn::make('city')
+                    ->searchable(query: fn ($query, string $search) => $query->whereHas(
+                        'translations',
+                        fn ($q) => $q->where('city', 'like', "%{$search}%")
+                            ->orWhere('name', 'like', "%{$search}%")
+                    ))
+                    ->sortable(false),
                 TextColumn::make('country'),
                 ColorColumn::make('badge_color'),
                 TextColumn::make('phone'),

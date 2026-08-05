@@ -22,23 +22,8 @@ class MomentsGallerySeeder extends Seeder
             'moments_cta' => 'VIEW GALLERY',
         ]);
 
-        $moments = GalleryCategory::query()->updateOrCreate(
-            ['slug' => 'moments-of-joy'],
-            [
-                'name' => 'Moments of Joy',
-                'sort_order' => 1,
-                'is_active' => true,
-            ]
-        );
-
-        $classroom = GalleryCategory::query()->updateOrCreate(
-            ['slug' => 'classroom'],
-            [
-                'name' => 'Classroom',
-                'sort_order' => 2,
-                'is_active' => true,
-            ]
-        );
+        $moments = $this->upsertCategory('moments-of-joy', 'Moments of Joy', 1);
+        $classroom = $this->upsertCategory('classroom', 'Classroom', 2);
 
         GalleryItem::query()->delete();
 
@@ -66,6 +51,31 @@ class MomentsGallerySeeder extends Seeder
         }
 
         $this->command?->info('Gallery seeded ('.GalleryItem::query()->count().' images, '.GalleryCategory::query()->count().' categories).');
+    }
+
+    private function upsertCategory(string $slug, string $name, int $sortOrder): GalleryCategory
+    {
+        $category = GalleryCategory::query()
+            ->whereTranslation('slug', $slug)
+            ->first();
+
+        if ($category) {
+            $category->fill([
+                'name' => $name,
+                'slug' => $slug,
+                'sort_order' => $sortOrder,
+                'is_active' => true,
+            ])->save();
+
+            return $category->refresh();
+        }
+
+        return GalleryCategory::query()->create([
+            'name' => $name,
+            'slug' => $slug,
+            'sort_order' => $sortOrder,
+            'is_active' => true,
+        ]);
     }
 
     /**

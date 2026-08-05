@@ -41,6 +41,11 @@ class BlogResource extends Resource
         ];
     }
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->with('translations');
+    }
+
     public static function getPages(): array
     {
         return [

@@ -16,7 +16,12 @@ class ProgramsTable
     {
         return $table
             ->columns([
-                TextColumn::make('title')->searchable()->sortable(),
+                TextColumn::make('title')
+                    ->searchable(query: fn ($query, string $search) => $query->whereHas(
+                        'translations',
+                        fn ($q) => $q->where('title', 'like', "%{$search}%")
+                    ))
+                    ->sortable(false),
                 TextColumn::make('age_range'),
                 ColorColumn::make('color'),
                 IconColumn::make('is_active')->boolean(),

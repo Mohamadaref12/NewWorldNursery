@@ -13,7 +13,7 @@ class BlogController extends Controller
     public function index(): AnonymousResourceCollection
     {
         return BlogResource::collection(
-            Blog::query()->active()->get()
+            Blog::query()->withTranslation()->active()->get()
         );
     }
 
@@ -22,7 +22,7 @@ class BlogController extends Controller
         $limit = min(max((int) $request->query('limit', 5), 1), 20);
 
         return BlogResource::collection(
-            Blog::query()->latestPublished($limit)->get()
+            Blog::query()->withTranslation()->latestPublished($limit)->get()
         );
     }
 
@@ -34,6 +34,8 @@ class BlogController extends Controller
             && $blog->published_at->lte(now()),
             404
         );
+
+        $blog->loadMissing('translations');
 
         return new BlogResource($blog);
     }

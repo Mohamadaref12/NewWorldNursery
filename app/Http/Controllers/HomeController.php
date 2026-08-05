@@ -16,11 +16,11 @@ class HomeController extends Controller
     {
         return view('home', [
             'settings' => SiteSetting::current(),
-            'features' => Feature::query()->active()->get(),
-            'locations' => Location::query()->active()->get(),
-            'programs' => Program::query()->active()->get(),
-            'momentsItems' => GalleryItem::query()->with('category')->active()->get(),
-            'galleryItems' => InstagramPost::query()->active()->get(),
+            'features' => Feature::query()->withTranslation()->active()->get(),
+            'locations' => Location::query()->withTranslation()->active()->get(),
+            'programs' => Program::query()->withTranslation()->active()->get(),
+            'momentsItems' => GalleryItem::query()->with(['translations', 'category.translations'])->active()->get(),
+            'galleryItems' => InstagramPost::query()->withTranslation()->active()->get(),
         ]);
     }
 }

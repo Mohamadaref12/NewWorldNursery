@@ -14,12 +14,15 @@ class GalleryController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = GalleryItem::query()->with('category')->active();
+        $query = GalleryItem::query()
+            ->withTranslation()
+            ->with(['category' => fn ($q) => $q->withTranslation()])
+            ->active();
 
         if ($category = $request->query('category')) {
             $query->whereHas('category', function ($builder) use ($category): void {
                 $builder->where(function ($inner) use ($category): void {
-                    $inner->where('slug', $category);
+                    $inner->whereHas('translations', fn ($q) => $q->where('slug', $category));
 
                     if (is_numeric($category)) {
                         $inner->orWhere('gallery_categories.id', $category);
@@ -35,8 +38,9 @@ class GalleryController extends Controller
     {
         return GalleryCategoryResource::collection(
             GalleryCategory::query()
+                ->withTranslation()
                 ->active()
-                ->with(['items' => fn ($query) => $query->active()])
+                ->with(['items' => fn ($query) => $query->withTranslation()->active()])
                 ->get()
         );
     }
@@ -45,7 +49,8 @@ class GalleryController extends Controller
     {
         abort_unless($category->is_active, 404);
 
-        $category->load(['items' => fn ($query) => $query->active()]);
+        $category->loadMissing('translations');
+        $category->load(['items' => fn ($query) => $query->withTranslation()->active()]);
 
         return new GalleryCategoryResource($category);
     }

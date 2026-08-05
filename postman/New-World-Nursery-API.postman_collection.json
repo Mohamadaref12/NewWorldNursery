@@ -2,10 +2,116 @@
   "info": {
     "_postman_id": "nwn-api-collection",
     "name": "New World Nursery API",
-    "description": "Public API endpoints for New World Nursery (Laravel).\n\nDocs:\n- docs/FRONTEND_API.md\n- docs/BLOG_API.md\n- docs/GALLERY_API.md\n- docs/INSTAGRAM_INTEGRATION.md",
+    "description": "Public API for New World Nursery (Laravel).\n\n## Localization (EN / AR)\nPass locale on every request:\n- Query: `?locale=en` or `?locale=ar`\n- Header: `X-Locale: en|ar`\n- Or `Accept-Language: ar`\n\nResponse header: `Content-Language`\n\n`GET /api/home` and `GET /api/settings` also return body field `locale`.\n\nDocs:\n- docs/FRONTEND_TRANSLATIONS.md (i18n changes for frontend)\n- docs/FRONTEND_API.md\n- docs/BLOG_API.md\n- docs/GALLERY_API.md\n- docs/INSTAGRAM_INTEGRATION.md",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "variable": [
+    { "key": "baseUrl", "value": "http://new-world-nursery.test" },
+    { "key": "locale", "value": "en" },
+    { "key": "locationId", "value": "1" },
+    { "key": "programId", "value": "1" },
+    { "key": "categorySlug", "value": "moments-of-joy" },
+    { "key": "blogSlug", "value": "a-happy-start-to-nursery-life" },
+    { "key": "blogLimit", "value": "5" },
+    { "key": "token", "value": "" }
+  ],
   "item": [
+    {
+      "name": "i18n",
+      "description": "Examples with English vs Arabic locale. Change collection variable `locale` or use these dedicated requests.",
+      "item": [
+        {
+          "name": "Home (EN)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "en" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/home?locale=en",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "home"],
+              "query": [{ "key": "locale", "value": "en" }]
+            },
+            "description": "Homepage payload in English. Check `locale` in body and `Content-Language` header."
+          },
+          "response": []
+        },
+        {
+          "name": "Home (AR)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "ar" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/home?locale=ar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "home"],
+              "query": [{ "key": "locale", "value": "ar" }]
+            },
+            "description": "Homepage payload in Arabic. Translated fields (titles, descriptions, settings copy) switch to AR when available; otherwise fall back to EN."
+          },
+          "response": []
+        },
+        {
+          "name": "Settings (AR)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "ar" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings?locale=ar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings"],
+              "query": [{ "key": "locale", "value": "ar" }]
+            },
+            "description": "Site settings translated strings (hero, about, section headings, contact address, footer). Shared fields (phones, emails, URLs, images) stay the same."
+          },
+          "response": []
+        },
+        {
+          "name": "Features (AR)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "ar" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/features?locale=ar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "features"],
+              "query": [{ "key": "locale", "value": "ar" }]
+            },
+            "description": "`title` and `description` are translated."
+          },
+          "response": []
+        },
+        {
+          "name": "Blogs (AR)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "ar" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/blogs?locale=ar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "blogs"],
+              "query": [{ "key": "locale", "value": "ar" }]
+            },
+            "description": "`title`, `slug`, `excerpt`, `content` are translated. Use the locale-specific `slug` for detail routes when navigating in that language."
+          },
+          "response": []
+        }
+      ]
+    },
     {
       "name": "Home",
       "item": [
@@ -14,10 +120,18 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Accept", "value": "application/json" }
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "{{locale}}" }
             ],
-            "url": "{{baseUrl}}/api/home",
-            "description": "Homepage payload: settings, features, locations, programs, gallery_categories, gallery_items/moments, instagram/gallery."
+            "url": {
+              "raw": "{{baseUrl}}/api/home?locale={{locale}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "home"],
+              "query": [
+                { "key": "locale", "value": "{{locale}}", "description": "en | ar" }
+              ]
+            },
+            "description": "Homepage payload: settings, features, locations, programs, gallery_categories, gallery_items/moments, instagram/gallery.\n\nAlso returns top-level `locale`."
           },
           "response": []
         }
@@ -31,10 +145,18 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Accept", "value": "application/json" }
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "{{locale}}" }
             ],
-            "url": "{{baseUrl}}/api/settings",
-            "description": "Returns site settings (hero, about, section headings, Instagram, Moments, contact, footer)."
+            "url": {
+              "raw": "{{baseUrl}}/api/settings?locale={{locale}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings"],
+              "query": [
+                { "key": "locale", "value": "{{locale}}", "description": "en | ar" }
+              ]
+            },
+            "description": "Site settings for current locale. Returns `{ locale, data }`."
           },
           "response": []
         }
@@ -48,10 +170,18 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Accept", "value": "application/json" }
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "{{locale}}" }
             ],
-            "url": "{{baseUrl}}/api/features",
-            "description": "Returns active features ordered by sort_order."
+            "url": {
+              "raw": "{{baseUrl}}/api/features?locale={{locale}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "features"],
+              "query": [
+                { "key": "locale", "value": "{{locale}}", "description": "en | ar" }
+              ]
+            },
+            "description": "Active features. Translated: title, description."
           },
           "response": []
         }
@@ -65,10 +195,18 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Accept", "value": "application/json" }
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "{{locale}}" }
             ],
-            "url": "{{baseUrl}}/api/locations",
-            "description": "Returns active nursery locations."
+            "url": {
+              "raw": "{{baseUrl}}/api/locations?locale={{locale}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations"],
+              "query": [
+                { "key": "locale", "value": "{{locale}}", "description": "en | ar" }
+              ]
+            },
+            "description": "Active locations. Translated: name, city, country, address, working_hours."
           },
           "response": []
         },
@@ -77,10 +215,18 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Accept", "value": "application/json" }
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "{{locale}}" }
             ],
-            "url": "{{baseUrl}}/api/locations/{{locationId}}",
-            "description": "Returns a single active location by ID."
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/{{locationId}}?locale={{locale}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "{{locationId}}"],
+              "query": [
+                { "key": "locale", "value": "{{locale}}", "description": "en | ar" }
+              ]
+            },
+            "description": "Single active location by ID."
           },
           "response": []
         }
@@ -94,10 +240,18 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Accept", "value": "application/json" }
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "{{locale}}" }
             ],
-            "url": "{{baseUrl}}/api/programs",
-            "description": "Returns active programs ordered by sort_order."
+            "url": {
+              "raw": "{{baseUrl}}/api/programs?locale={{locale}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "programs"],
+              "query": [
+                { "key": "locale", "value": "{{locale}}", "description": "en | ar" }
+              ]
+            },
+            "description": "Active programs. Translated: title, age_range, description."
           },
           "response": []
         },
@@ -106,10 +260,18 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Accept", "value": "application/json" }
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "{{locale}}" }
             ],
-            "url": "{{baseUrl}}/api/programs/{{programId}}",
-            "description": "Returns a single active program by ID."
+            "url": {
+              "raw": "{{baseUrl}}/api/programs/{{programId}}?locale={{locale}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "programs", "{{programId}}"],
+              "query": [
+                { "key": "locale", "value": "{{locale}}", "description": "en | ar" }
+              ]
+            },
+            "description": "Single active program by ID."
           },
           "response": []
         }
@@ -123,10 +285,18 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Accept", "value": "application/json" }
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "{{locale}}" }
             ],
-            "url": "{{baseUrl}}/api/gallery",
-            "description": "Returns all active gallery images (with category). From gallery_items table."
+            "url": {
+              "raw": "{{baseUrl}}/api/gallery?locale={{locale}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "gallery"],
+              "query": [
+                { "key": "locale", "value": "{{locale}}", "description": "en | ar" }
+              ]
+            },
+            "description": "Gallery images. Translated: alt, category.name, category.slug."
           },
           "response": []
         },
@@ -135,21 +305,19 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Accept", "value": "application/json" }
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "{{locale}}" }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/gallery?category={{categorySlug}}",
+              "raw": "{{baseUrl}}/api/gallery?category={{categorySlug}}&locale={{locale}}",
               "host": ["{{baseUrl}}"],
               "path": ["api", "gallery"],
               "query": [
-                {
-                  "key": "category",
-                  "value": "{{categorySlug}}",
-                  "description": "Category slug or numeric id"
-                }
+                { "key": "category", "value": "{{categorySlug}}", "description": "Category slug (any locale) or numeric id" },
+                { "key": "locale", "value": "{{locale}}", "description": "en | ar" }
               ]
             },
-            "description": "Returns gallery images filtered by category slug or id."
+            "description": "Filter by category slug (matches any locale slug) or id."
           },
           "response": []
         },
@@ -158,10 +326,18 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Accept", "value": "application/json" }
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "{{locale}}" }
             ],
-            "url": "{{baseUrl}}/api/gallery/categories",
-            "description": "Returns all active categories, each with nested active items."
+            "url": {
+              "raw": "{{baseUrl}}/api/gallery/categories?locale={{locale}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "gallery", "categories"],
+              "query": [
+                { "key": "locale", "value": "{{locale}}", "description": "en | ar" }
+              ]
+            },
+            "description": "Categories with nested items. Translated: name, slug, items[].alt."
           },
           "response": []
         },
@@ -170,10 +346,18 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Accept", "value": "application/json" }
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "{{locale}}" }
             ],
-            "url": "{{baseUrl}}/api/gallery/categories/{{categorySlug}}",
-            "description": "Returns one category by slug with its active images in items[]."
+            "url": {
+              "raw": "{{baseUrl}}/api/gallery/categories/{{categorySlug}}?locale={{locale}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "gallery", "categories", "{{categorySlug}}"],
+              "query": [
+                { "key": "locale", "value": "{{locale}}", "description": "en | ar" }
+              ]
+            },
+            "description": "One category by slug (EN or AR slug works)."
           },
           "response": []
         }
@@ -187,10 +371,18 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Accept", "value": "application/json" }
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "{{locale}}" }
             ],
-            "url": "{{baseUrl}}/api/instagram",
-            "description": "Returns synced Instagram posts from instagram_posts (separate from gallery). Empty until Connect + Sync in admin."
+            "url": {
+              "raw": "{{baseUrl}}/api/instagram?locale={{locale}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "instagram"],
+              "query": [
+                { "key": "locale", "value": "{{locale}}", "description": "en | ar" }
+              ]
+            },
+            "description": "Instagram posts. Translated: alt."
           },
           "response": []
         }
@@ -204,10 +396,18 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Accept", "value": "application/json" }
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "{{locale}}" }
             ],
-            "url": "{{baseUrl}}/api/blogs",
-            "description": "Returns all published active blogs (newest first)."
+            "url": {
+              "raw": "{{baseUrl}}/api/blogs?locale={{locale}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "blogs"],
+              "query": [
+                { "key": "locale", "value": "{{locale}}", "description": "en | ar" }
+              ]
+            },
+            "description": "Published blogs. Translated: title, slug, excerpt, content."
           },
           "response": []
         },
@@ -216,21 +416,19 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Accept", "value": "application/json" }
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "{{locale}}" }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/blogs/latest?limit={{blogLimit}}",
+              "raw": "{{baseUrl}}/api/blogs/latest?limit={{blogLimit}}&locale={{locale}}",
               "host": ["{{baseUrl}}"],
               "path": ["api", "blogs", "latest"],
               "query": [
-                {
-                  "key": "limit",
-                  "value": "{{blogLimit}}",
-                  "description": "Default 5, min 1, max 20"
-                }
+                { "key": "limit", "value": "{{blogLimit}}", "description": "Default 5, min 1, max 20" },
+                { "key": "locale", "value": "{{locale}}", "description": "en | ar" }
               ]
             },
-            "description": "Returns the latest published blogs."
+            "description": "Latest published blogs for current locale."
           },
           "response": []
         },
@@ -239,10 +437,18 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Accept", "value": "application/json" }
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Locale", "value": "{{locale}}" }
             ],
-            "url": "{{baseUrl}}/api/blogs/{{blogSlug}}",
-            "description": "Returns a single published blog by slug."
+            "url": {
+              "raw": "{{baseUrl}}/api/blogs/{{blogSlug}}?locale={{locale}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "blogs", "{{blogSlug}}"],
+              "query": [
+                { "key": "locale", "value": "{{locale}}", "description": "en | ar" }
+              ]
+            },
+            "description": "Single blog. Slug can be EN or AR translation slug."
           },
           "response": []
         }
@@ -257,14 +463,15 @@
             "method": "POST",
             "header": [
               { "key": "Accept", "value": "application/json" },
-              { "key": "Content-Type", "value": "application/json" }
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Locale", "value": "{{locale}}" }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Jane Smith\",\n  \"email\": \"jane@example.com\",\n  \"phone\": \"+971501234567\",\n  \"program\": \"Toddlers\",\n  \"child_age\": \"3 years\",\n  \"message\": \"I would like to book a visit for my child.\"\n}"
             },
             "url": "{{baseUrl}}/api/contact",
-            "description": "Submits a contact / plan-a-visit message.\n\nRequired: name, email, message\nOptional: phone, program, child_age"
+            "description": "Contact form. Not translated (user-submitted data).\n\nFor `program`, prefer the program `title` from `/api/programs?locale=...` in the active language."
           },
           "response": []
         }
@@ -287,7 +494,7 @@
               { "key": "Accept", "value": "application/json" }
             ],
             "url": "{{baseUrl}}/api/user",
-            "description": "Returns the authenticated user (Sanctum Bearer token required)."
+            "description": "Authenticated user (Sanctum). No translation impact."
           },
           "response": []
         }

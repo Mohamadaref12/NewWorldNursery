@@ -17,7 +17,12 @@ class BlogsTable
         return $table
             ->columns([
                 ImageColumn::make('image')->disk('images'),
-                TextColumn::make('title')->searchable()->sortable(),
+                TextColumn::make('title')
+                    ->searchable(query: fn ($query, string $search) => $query->whereHas(
+                        'translations',
+                        fn ($q) => $q->where('title', 'like', "%{$search}%")
+                    ))
+                    ->sortable(false),
                 TextColumn::make('slug')->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('published_at')->dateTime()->sortable(),
                 IconColumn::make('is_active')->boolean(),

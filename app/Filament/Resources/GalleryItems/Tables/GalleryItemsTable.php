@@ -18,15 +18,22 @@ class GalleryItemsTable
         return $table
             ->columns([
                 ImageColumn::make('image')->disk('images'),
-                TextColumn::make('category.name')->label('Category')->sortable()->searchable(),
-                TextColumn::make('alt')->searchable(),
+                TextColumn::make('category.name')->label('Category')->sortable(false)->searchable(false),
+                TextColumn::make('alt')->searchable(query: function ($query, string $search): void {
+                    $query->whereHas('translations', fn ($q) => $q->where('alt', 'like', "%{$search}%"));
+                }),
                 TextColumn::make('sort_order')->sortable(),
                 IconColumn::make('is_active')->boolean(),
             ])
             ->filters([
                 SelectFilter::make('gallery_category_id')
                     ->label('Category')
-                    ->relationship('category', 'name'),
+                    ->relationship(
+                        name: 'category',
+                        titleAttribute: 'id',
+                        modifyQueryUsing: fn ($query) => $query->with('translations'),
+                    )
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->display_name),
             ])
             ->defaultSort('sort_order')
             ->reorderable('sort_order')

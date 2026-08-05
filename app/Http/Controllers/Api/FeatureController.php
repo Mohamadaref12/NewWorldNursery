@@ -12,7 +12,7 @@ class FeatureController extends Controller
     public function index(): AnonymousResourceCollection
     {
         return FeatureResource::collection(
-            Feature::query()->active()->get()
+            Feature::query()->withTranslation()->active()->get()
         );
     }
 }

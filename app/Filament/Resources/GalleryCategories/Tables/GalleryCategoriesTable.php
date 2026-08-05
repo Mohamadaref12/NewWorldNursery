@@ -15,8 +15,17 @@ class GalleryCategoriesTable
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable()->sortable(),
-                TextColumn::make('slug')->searchable(),
+                TextColumn::make('name')
+                    ->searchable(query: fn ($query, string $search) => $query->whereHas(
+                        'translations',
+                        fn ($q) => $q->where('name', 'like', "%{$search}%")
+                    ))
+                    ->sortable(false),
+                TextColumn::make('slug')
+                    ->searchable(query: fn ($query, string $search) => $query->whereHas(
+                        'translations',
+                        fn ($q) => $q->where('slug', 'like', "%{$search}%")
+                    )),
                 TextColumn::make('items_count')->counts('items')->label('Images'),
                 TextColumn::make('sort_order')->sortable(),
                 IconColumn::make('is_active')->boolean(),
