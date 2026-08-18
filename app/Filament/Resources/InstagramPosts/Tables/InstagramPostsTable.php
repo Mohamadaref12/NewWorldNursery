@@ -7,9 +7,11 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Notifications\Notification;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
@@ -40,11 +42,22 @@ class InstagramPostsTable
                     ->url(fn ($record) => $record->permalink, shouldOpenInNewTab: true)
                     ->color('primary')
                     ->toggleable(),
-                TextColumn::make('is_active')
-                    ->label('Status')
-                    ->badge()
-                    ->formatStateUsing(fn (bool $state): string => $state ? 'Published' : 'Hidden')
-                    ->color(fn (bool $state): string => $state ? 'success' : 'gray'),
+                ToggleColumn::make('is_active')
+                    ->label('On site')
+                    ->onColor('success')
+                    ->offColor('gray')
+                    ->onIcon(Heroicon::OutlinedEye)
+                    ->offIcon(Heroicon::OutlinedEyeSlash)
+                    ->alignCenter()
+                    ->tooltip(fn ($state): string => $state
+                        ? 'Visible on the website — click to hide'
+                        : 'Hidden from the website — click to publish')
+                    ->afterStateUpdated(function ($state): void {
+                        Notification::make()
+                            ->title($state ? 'Published on the site' : 'Hidden from the site')
+                            ->success()
+                            ->send();
+                    }),
                 TextColumn::make('sort_order')
                     ->label('Order')
                     ->sortable()
