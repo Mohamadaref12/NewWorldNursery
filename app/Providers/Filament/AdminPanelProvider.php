@@ -29,10 +29,10 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName('New World Nursery')
-            ->brandLogo(fn (): string => asset('images/logo.png'))
-            ->darkModeBrandLogo(fn (): string => asset('images/logo.png'))
+            ->brandLogo(fn (): string => asset('publuc/images/logo.png'))
+            ->darkModeBrandLogo(fn (): string => asset('publuc/images/logo.png'))
             ->brandLogoHeight('3.25rem')
-            ->favicon(fn (): string => asset('images/logo.png'))
+            ->favicon(fn (): string => asset('publuc/images/logo.png'))
             ->colors([
                 'primary' => Color::hex('#2E9E94'),
                 'success' => Color::hex('#6BBF8A'),
