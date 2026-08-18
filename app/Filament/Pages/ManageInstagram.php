@@ -25,6 +25,7 @@ use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
 use Throwable;
+use UnitEnum;
 
 /**
  * @property-read Schema $form
@@ -33,11 +34,13 @@ class ManageInstagram extends Page
 {
     use CanUseDatabaseTransactions;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCamera;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
-    protected static ?string $navigationLabel = 'Instagram';
+    protected static ?string $navigationLabel = 'Settings';
 
-    protected static ?int $navigationSort = 2;
+    protected static string|UnitEnum|null $navigationGroup = 'Instagram';
+
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $title = 'Instagram Integration';
 

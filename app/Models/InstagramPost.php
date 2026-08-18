@@ -7,6 +7,7 @@ use App\Traits\InteractsWithEnArTranslations;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class InstagramPost extends Model
 {
@@ -31,6 +32,15 @@ class InstagramPost extends Model
             'is_active' => 'boolean',
             'sort_order' => 'integer',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (InstagramPost $post): void {
+            if (blank($post->instagram_media_id)) {
+                $post->instagram_media_id = 'manual-'.Str::ulid();
+            }
+        });
     }
 
     public function translationModelClass(): string

@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class LocationResource extends Resource
 {
@@ -21,6 +22,8 @@ class LocationResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;
 
     protected static ?string $navigationLabel = 'Locations';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Website';
 
     protected static ?int $navigationSort = 4;
 

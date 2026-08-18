@@ -14,6 +14,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use UnitEnum;
 
 class ContactMessageResource extends Resource
 {
@@ -27,7 +28,9 @@ class ContactMessageResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Contact Messages';
 
-    protected static ?int $navigationSort = 10;
+    protected static string|UnitEnum|null $navigationGroup = 'Inbox';
+
+    protected static ?int $navigationSort = 1;
 
     public static function getNavigationBadge(): ?string
     {

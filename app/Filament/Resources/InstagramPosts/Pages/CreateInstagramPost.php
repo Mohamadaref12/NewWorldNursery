@@ -8,4 +8,19 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateInstagramPost extends CreateRecord
 {
     protected static string $resource = InstagramPostResource::class;
+
+    public function getTitle(): string
+    {
+        return 'Add Instagram post';
+    }
+
+    public function getHeading(): string
+    {
+        return 'Add Instagram post';
+    }
+
+    public function getSubheading(): ?string
+    {
+        return 'Upload an image and optional English / Arabic captions.';
+    }
 }

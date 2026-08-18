@@ -2,33 +2,27 @@
 
 namespace App\Filament\Resources\InstagramPosts\Pages;
 
-use App\Filament\Concerns\HasEnArTranslationForms;
 use App\Filament\Resources\InstagramPosts\InstagramPostResource;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\ViewAction;
-use Filament\Resources\Pages\EditRecord;
+use Filament\Resources\Pages\ViewRecord;
+use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 
-class EditInstagramPost extends EditRecord
+class ViewInstagramPost extends ViewRecord
 {
-    use HasEnArTranslationForms;
-
     protected static string $resource = InstagramPostResource::class;
 
-    public function getTitle(): string
-    {
-        return $this->record->display_name ?: 'Edit Instagram post';
-    }
+    protected Width | string | null $maxContentWidth = Width::SevenExtraLarge;
 
     public function getHeading(): string
     {
-        return 'Edit post';
+        return 'View post';
     }
 
     public function getSubheading(): ?string
     {
-        return 'Update the image, caption translations, and whether this post appears on the site.';
+        return null;
     }
 
     protected function getHeaderActions(): array
@@ -41,7 +35,6 @@ class EditInstagramPost extends EditRecord
                 ->url(fn (): ?string => $this->record->permalink)
                 ->openUrlInNewTab()
                 ->visible(fn (): bool => filled($this->record->permalink)),
-            ViewAction::make(),
             DeleteAction::make(),
         ];
     }

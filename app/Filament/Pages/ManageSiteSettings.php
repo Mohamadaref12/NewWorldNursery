@@ -21,6 +21,7 @@ use Filament\Support\Exceptions\Halt;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
 use Throwable;
+use UnitEnum;
 
 /**
  * @property-read Schema $form
@@ -32,6 +33,8 @@ class ManageSiteSettings extends Page
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
     protected static ?string $navigationLabel = 'Site Settings';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Website';
 
     protected static ?int $navigationSort = 1;
 

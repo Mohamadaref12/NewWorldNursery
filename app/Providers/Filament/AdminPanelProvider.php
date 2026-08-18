@@ -2,16 +2,16 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Dashboard;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages\Dashboard;
+use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -28,8 +28,24 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandName('New World Nursery')
+            ->brandLogo(fn (): string => asset('images/logo.png'))
+            ->darkModeBrandLogo(fn (): string => asset('images/logo.png'))
+            ->brandLogoHeight('3.25rem')
+            ->favicon(fn (): string => asset('images/logo.png'))
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::hex('#2E9E94'),
+                'success' => Color::hex('#6BBF8A'),
+                'info' => Color::hex('#5BA8D0'),
+                'warning' => Color::hex('#E8C44A'),
+                'danger' => Color::hex('#E56B9A'),
+            ])
+            ->navigationGroups([
+                NavigationGroup::make('Instagram')->collapsed(false),
+                NavigationGroup::make('Gallery'),
+                NavigationGroup::make('Website'),
+                NavigationGroup::make('Inbox'),
+                NavigationGroup::make('Admin'),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
@@ -38,7 +54,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-          
+                // AccountWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
