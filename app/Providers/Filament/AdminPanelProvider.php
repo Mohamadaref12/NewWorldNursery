@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Dashboard;
+use App\Support\ImageUrl;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -29,10 +30,10 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName('New World Nursery')
-            ->brandLogo(fn (): string => asset('public/images/logo.png'))
-            ->darkModeBrandLogo(fn (): string => asset('public/images/logo.png'))
+            ->brandLogo(fn (): string => ImageUrl::publicFile('images/logo.png'))
+            ->darkModeBrandLogo(fn (): string => ImageUrl::publicFile('images/logo.png'))
             ->brandLogoHeight('3.25rem')
-            ->favicon(fn (): string => asset('public/images/logo.png'))
+            ->favicon(fn (): string => ImageUrl::publicFile('images/logo.png'))
             ->colors([
                 'primary' => Color::hex('#2E9E94'),
                 'success' => Color::hex('#6BBF8A'),
